@@ -7,3 +7,14 @@ services:
       NODE_ENV: production
     ports:
       - "4000:4000"
+    depends_on:
+      - otelcol
+
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - ./collector-config.yaml:/etc/otelcol/config.yaml
+    command: ["--config", "/etc/otelcol/config.yaml"]
+    ports:
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP HTTP receiver
