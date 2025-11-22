@@ -1,10 +1,7 @@
 import { ApolloServerPlugin } from "apollo-server-plugin-base";
-import { metrics, trace } from "@opentelemetry/api";
+import { meter, tracer } from "./instrumentation";
 
 export function createOtelApolloPlugin(): ApolloServerPlugin {
-  const tracer = trace.getTracer("apollo-plugin-tracer");
-  const meter = metrics.getMeter("apollo-meter");
-
   return {
     async requestDidStart(_requestContext) {
       meter.createCounter("request-count").add(1, { operation: "Query" });

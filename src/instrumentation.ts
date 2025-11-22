@@ -9,6 +9,7 @@ import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
 } from "@opentelemetry/semantic-conventions";
+import { metrics, trace } from "@opentelemetry/api";
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
@@ -30,5 +31,9 @@ const sdk = new NodeSDK({
     // new GraphQLInstrumentation(),
   ],
 });
+
+export const tracer = trace.getTracer("apollo-plugin-tracer");
+
+export const meter = metrics.getMeter("apollo-meter");
 
 sdk.start();
