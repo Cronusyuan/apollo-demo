@@ -24,6 +24,7 @@ const sdk = new NodeSDK({
       exporter: new OTLPMetricExporter({
         url: "http://otelcol:4318/v1/metrics",
       }),
+      exportIntervalMillis: 5000,
     }),
   ],
   instrumentations: [
@@ -31,9 +32,5 @@ const sdk = new NodeSDK({
     // new GraphQLInstrumentation(),
   ],
 });
-
-export const tracer = trace.getTracer("apollo-plugin-tracer");
-
-export const meter = metrics.getMeter("apollo-meter");
 
 sdk.start();
