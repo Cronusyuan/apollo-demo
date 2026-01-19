@@ -17,16 +17,21 @@ receivers:
   hostmetrics:
     collection_interval: 30s
     scrapers:
+      cpu:
+      memory:
       disk:
       filesystem:
       load:
       network:
 
-  hostmetrics/frequent:
-    collection_interval: 10s
-    scrapers:
-      cpu:
-      memory:
+  # WIP receiver
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: "otel-collector"
+          scrape_interval: 15s
+          static_configs:
+            - targets: ["0.0.0.0:8888"]
 
 exporters:
   debug:
@@ -38,8 +43,8 @@ service:
       receivers: [otlp]
       exporters: [debug]
     metrics:
-      receivers: [hostmetrics, hostmetrics/frequent]
+      receivers: [prometheus]
       exporters: [debug]
     logs:
-      receivers: [hostmetrics]
+      receivers: [otlp]
       exporters: [debug]
