@@ -33,6 +33,19 @@ receivers:
           static_configs:
             - targets: ["0.0.0.0:8888"]
 
+  filelog:
+    include:
+      - /var/log/*.log
+    start_at: end
+    operators:
+      - type: regex_parser
+        regex: '^(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) (?P<sev>[A-Z]*) (?P<msg>.*)$'
+        timestamp:
+          parse_from: attributes.time
+          layout: '%Y-%m-%d %H:%M:%S'
+        severity:
+          parse_from: attributes.sev
+
 exporters:
   debug:
     verbosity: detailed
@@ -43,8 +56,8 @@ service:
       receivers: [otlp]
       exporters: [debug]
     metrics:
-      receivers: [prometheus]
+      receivers: [otlp]
       exporters: [debug]
     logs:
-      receivers: [otlp]
+      receivers: [filelog]
       exporters: [debug]
