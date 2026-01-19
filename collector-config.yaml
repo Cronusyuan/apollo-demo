@@ -13,7 +13,7 @@ receivers:
           allowed_headers:
             - Cors-Header
           max_age: 3600
-  
+
   hostmetrics:
     collection_interval: 30s
     scrapers:
@@ -42,9 +42,15 @@ receivers:
         regex: '^(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) (?P<sev>[A-Z]*) (?P<msg>.*)$'
         timestamp:
           parse_from: attributes.time
-          layout: '%Y-%m-%d %H:%M:%S'
+          layout: "%Y-%m-%d %H:%M:%S"
         severity:
           parse_from: attributes.sev
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 400
+    spike_limit_mib: 100
 
 exporters:
   debug:
@@ -54,10 +60,13 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
+      processors: [memory_limiter]
       exporters: [debug]
     metrics:
       receivers: [otlp]
+      processors: [memory_limiter]
       exporters: [debug]
     logs:
       receivers: [filelog]
+      processors: [memory_limiter]
       exporters: [debug]
