@@ -13,6 +13,16 @@ receivers:
           allowed_headers:
             - Cors-Header
           max_age: 3600
+  
+  hostmetrics:
+    collection_interval: 30s
+    scrapers:
+      cpu:
+      memory:
+      disk:
+      filesystem:
+      load:
+      network:
 
 exporters:
   debug:
@@ -24,8 +34,8 @@ service:
       receivers: [otlp]
       exporters: [debug]
     metrics:
-      receivers: [otlp]
+      receivers: [hostmetrics]
       exporters: [debug]
     logs:
-      receivers: [otlp]
+      receivers: [hostmetrics]
       exporters: [debug]
