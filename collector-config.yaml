@@ -89,7 +89,7 @@ processors:
       metric:
         - 'name != "request-count"'
       datapoint:
-        - 'value_double < 2'
+        - "value_double < 2"
 
   tail_sampling:
     decision_wait: 10s
@@ -106,18 +106,22 @@ processors:
 exporters:
   debug:
     verbosity: detailed
+  otlphttp:
+    endpoint: http://localhost:4318
+    encoding: json
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, resource, attributes, filter, tail_sampling, batch]
-      exporters: [debug]
+      processors:
+        [memory_limiter, resource, attributes, filter, tail_sampling, batch]
+      exporters: [debug, otlphttp]
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, resource, attributes, filter, batch]
-      exporters: [debug]
+      exporters: [debug, otlphttp]
     logs:
       receivers: [filelog]
       processors: [memory_limiter, resource, attributes, filter, batch]
-      exporters: [debug]
+      exporters: [debug, otlphttp]
